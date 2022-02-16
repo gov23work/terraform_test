@@ -9,6 +9,7 @@ resource "aws_instance" "webserver" {
   vpc_security_group_ids = [aws_security_group.web.id]
   tags = {
     Name = "Tim's Webserver"
+    cost_center = "6310"
   }
 }
 resource "aws_security_group" "web" {
