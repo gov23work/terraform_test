@@ -5,7 +5,7 @@ provider "aws" {
 
 resource "aws_instance" "webserver" {
   ami           = "ami-0cd855c8009cb26ef"
-  instance_type = "t2.nano"
+  instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
   tags = {
     Name = "Tim's Webserver"
@@ -30,4 +30,9 @@ resource "aws_security_group" "web" {
   tags = {
     Name = "web-access"
   }
+}
+variable "instance_type" {
+  type = string
+  description = "Instance type for the web server."
+  default = "t2.nano"
 }
