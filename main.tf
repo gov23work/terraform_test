@@ -7,13 +7,11 @@ resource "aws_instance" "webserver" {
   ami           = "ami-0cd855c8009cb26ef"
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
-  user_data = file("user_data.sh")
-  tags = {
-    Name = "Tim's Webserver"
-    cost_center = "6310"
-  }
-  
+  user_data = templatefile("user_data.sh", {username ="Kirk"})
+  tags = merge(local.tags, tomap( {Name = "Tim's Webserver" , cost_center = "6310"}))
+
 }
+  
 resource "aws_security_group" "web" {
   name_prefix = "web-access"
   description = "Allow access to the server from the web"
@@ -45,5 +43,11 @@ output "public_ip" {
 output "private_ip" {
   description = "Private IP Address"
   value = aws_instance.webserver.private_ip
+}
+locals {
+  tags = {
+    Project = "Paint elephants pink"
+    Owner = "<XXX>"
+  }
 }
  
