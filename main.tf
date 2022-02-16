@@ -7,15 +7,7 @@ resource "aws_instance" "webserver" {
   ami           = "ami-0cd855c8009cb26ef"
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
-  user_data = <<-EOF
-    #!/bin/bash
-    # Install Apache Web Server 
-    yum install -y httpd
-    echo "Hello Captain!" > /var/www/html/index.html
-    # Turn on web server 
-    chkconfig httpd on 
-    service httpd start
-    EOF
+  user_data = file("user_data.sh")
   tags = {
     Name = "Tim's Webserver"
     cost_center = "6310"
