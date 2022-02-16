@@ -7,10 +7,20 @@ resource "aws_instance" "webserver" {
   ami           = "ami-0cd855c8009cb26ef"
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
+  user_data = <<-EOF
+    #!/bin/bash
+    # Install Apache Web Server 
+    yum install -y httpd
+    echo "Hello Captain!" > /var/www/html/index.html
+    # Turn on web server 
+    chkconfig httpd on 
+    service httpd start
+    EOF
   tags = {
     Name = "Tim's Webserver"
     cost_center = "6310"
   }
+  
 }
 resource "aws_security_group" "web" {
   name_prefix = "web-access"
@@ -44,3 +54,4 @@ output "private_ip" {
   description = "Private IP Address"
   value = aws_instance.webserver.private_ip
 }
+ 
