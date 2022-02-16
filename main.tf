@@ -36,3 +36,11 @@ variable "instance_type" {
   description = "Instance type for the web server."
   default = "t2.nano"
 }
+output "public_ip" {
+  description = "Public IP Address"
+  value = aws_instance.webserver.public_ip
+}
+output "private_ip" {
+  description = "Private IP Address"
+  value = aws_instance.webserver.private_ip
+}
