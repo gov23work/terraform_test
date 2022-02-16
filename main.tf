@@ -5,10 +5,11 @@ provider "aws" {
 
 resource "aws_instance" "webserver" {
   ami           = "ami-0cd855c8009cb26ef"
-  instance_type = "t2.nano"
+  instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
   tags = {
     Name = "Tim's Webserver"
+    cost_center = "6310"
   }
 }
 resource "aws_security_group" "web" {
@@ -29,4 +30,17 @@ resource "aws_security_group" "web" {
   tags = {
     Name = "web-access"
   }
+}
+variable "instance_type" {
+  type = string
+  description = "Instance type for the web server."
+  default = "t2.nano"
+}
+output "public_ip" {
+  description = "Public IP Address"
+  value = aws_instance.webserver.public_ip
+}
+output "private_ip" {
+  description = "Private IP Address"
+  value = aws_instance.webserver.private_ip
 }
