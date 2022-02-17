@@ -17,18 +17,16 @@ variable "my_default_tags" {
 
 
 resource "aws_instance" "webserver" {
+  for_each = toset(["TEST","NOWAY"])
   ami = data.aws_ami.amazon-linux-2.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
   user_data = templatefile("user_data.sh", {username ="Kirk"})
+  
   tags = merge(local.tags, tomap( {Name = "Tim's Webserver" , cost_center = "6310", stage = "test"}))
 
 }
-
-resource "aws_instance" "exam" {
-
-}
-  
+ 
 resource "aws_security_group" "web" {
   name_prefix = "web-access"
   description = "Allow access to the server from the web"
@@ -55,11 +53,11 @@ variable "instance_type" {
 }
 output "public_ip" {
   description = "Public IP Address"
-  value = aws_instance.webserver.public_ip
+  value = aws_instance.webserver["TEST"].public_ip
 }
-output "private_ip" {
-  description = "Private IP Address"
-  value = aws_instance.webserver.private_ip
+output "Second_public_ip" {
+  description = "2nd public IP Address"
+  value = aws_instance.webserver["NOWAY"].private_ip
 }
 locals {
   tags = {
