@@ -53,11 +53,11 @@ variable "instance_type" {
 }
 output "public_ip" {
   description = "Public IP Address"
-  value = aws_instance.webserver["TEST"].public_ip
+  value = toset([for webserver in aws_instance.webserver : webserver.public_ip])
 }
-output "Second_public_ip" {
-  description = "2nd public IP Address"
-  value = aws_instance.webserver["NOWAY"].private_ip
+output "private_ip" {
+  description = "Private IP Address"
+  value = toset([for webserver in aws_instance.webserver : webserver.private_ip])
 }
 locals {
   tags = {
@@ -75,4 +75,8 @@ data "aws_ami" "amazon-linux-2" {
 }
 resource "aws_eip" "example"{
 
+}
+variable "instances" {
+  type = set(string)
+  default = ["TEST", "NOWAY"]  
 }
