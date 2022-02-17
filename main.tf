@@ -1,7 +1,20 @@
 provider "aws" {
   profile  = "terraformWS"
   region   = "eu-central-1"
+  default_tags {
+    tags = var.my_default_tags
+  }
 }
+
+variable "my_default_tags" {
+  type = map(string)
+  description = "Definition for default tags for resources"
+  default = {
+    automated_through = "Terraform"
+    created_by = "Terraform Workshop"
+  }
+}
+
 
 resource "aws_instance" "webserver" {
   ami           = "ami-0cd855c8009cb26ef"
