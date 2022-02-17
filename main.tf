@@ -17,3 +17,15 @@ module "test-webserver" {
 
   instance_type = var.instance_type
 }
+terraform {
+  backend "s3" {
+    profile = "terraformWS"
+    bucket = "qwiklabs-tfstate-f8fa09d0-8fc8-11ec-8884-0a3035716952"
+    dynamodb_table = "qwiklabs-tfstate-lock"
+    key = "terraform.tfstate"
+    region = "eu-central-1"
+  }
+}
+resource "aws_s3_bucket" "name" {
+  bucket_prefix = terraform.workspace
+}
