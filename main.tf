@@ -1,27 +1,9 @@
-provider "aws" {
-  profile  = "terraformWS"
-  region   = "eu-central-1"
-  default_tags {
-    tags = var.my_default_tags
-  }
-}
-
-variable "my_default_tags" {
-  type = map(string)
-  description = "Definition for default tags for resources"
-  default = {
-    automated_through = "Terraform"
-    created_by = "Terraform Workshop"
-  }
-}
-
-
 resource "aws_instance" "webserver" {
   for_each = toset(["TEST","NOWAY"])
   ami = data.aws_ami.amazon-linux-2.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
-  user_data = templatefile("user_data.sh", {username ="Kirk"})
+  user_data = templatefile("./templates/user_data.sh", {username ="Kirk"})
   
   tags = merge(local.tags, tomap( {Name = "Tim's Webserver" , cost_center = "6310", stage = "test"}))
 
@@ -46,37 +28,7 @@ resource "aws_security_group" "web" {
     Name = "web-access"
   }
 }
-variable "instance_type" {
-  type = string
-  description = "Instance type for the web server."
-  default = "t2.nano"
-}
-output "public_ip" {
-  description = "Public IP Address"
-  value = toset([for webserver in aws_instance.webserver : webserver.public_ip])
-}
-output "private_ip" {
-  description = "Private IP Address"
-  value = toset([for webserver in aws_instance.webserver : webserver.private_ip])
-}
-locals {
-  tags = {
-    Project = "Paint elephants pink"
-    Owner = "<XXX>"
-  }
-}
-data "aws_ami" "amazon-linux-2" {
-  most_recent = true
-  owners = ["amazon"]
-  filter {
-    name = "name"
-    values = ["amzn2-ami-hvm-2.0.*-x86_64-gp2"]
-  }
-}
+
 resource "aws_eip" "example"{
 
-}
-variable "instances" {
-  type = set(string)
-  default = ["TEST", "NOWAY"]  
 }
